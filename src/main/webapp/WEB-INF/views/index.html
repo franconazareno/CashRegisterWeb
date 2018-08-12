@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <title>Rocketmiles</title>
+</head>
+<body>
+<div class="container text-center">
+    <h2 style="margin-top: 20px;">Online Cash Register</h2>
+    <div style="align-content: center;">
+        <table class="table table-dark" style="width: 800px; margin: 20px auto; ">
+            <thead>
+            <tr>
+                <th> Name </th>
+                <th> Denomination </th>
+                <th> Count </th>
+                <th> Value </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${list.isEmpty()}">
+                <td colspan="4"> No Money Available </td>
+            </tr>
+            <tr th:each="item : ${list}">
+                <td><span th:text="${item.name}"> Name </span></td>
+                <td><span th:text="${item.denomination}"> Denomination </span></td>
+                <td><span th:text="${item.count}"> Count </span></td>
+                <td><span th:text="${item.value}"> Value </span></td>
+            </tr>
+            <tr>
+                <td> Total </td>
+                <td colspan="2"></td>
+                <td><span th:text="${sum}"> Total </span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" style="width: 100px;" data-toggle="modal" data-target="#initModal">Init</button>
+        <button type="button" class="btn btn-success" style="width: 100px;" data-toggle="modal" data-target="#putModal">Put</button>
+        <button type="button" class="btn btn-danger" style="width: 100px;" data-toggle="modal" data-target="#takeModal">Take</button>
+        <button type="button" class="btn btn-warning" style="width: 100px;" data-toggle="modal" data-target="#changeModal">Change</button>
+    </div>
+</div>
+<!-- /container -->
+<!-- init model -->
+<div class="modal fade" id="initModal" tabindex="-1" role="dialog" aria-labelledby="initModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="initModalTitle">Init Register</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <p>Are you sure you want to initilize the table? This will delete all transactions.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="init()">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- init model -->
+<!-- put modal -->
+<div class="modal fade" id="putModal" tabindex="-1" role="dialog" aria-labelledby="putModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="putModalTitle">Put Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="putForm" name="putForm" role="form">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="put20" class="col-sm-2 col-form-label">$ 20</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="put20" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="put10" class="col-sm-2 col-form-label">$ 10</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="put10" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="put5" class="col-sm-2 col-form-label">$ 5</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="put5" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="put2" class="col-sm-2 col-form-label">$ 2</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="put2" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="put1" class="col-sm-2 col-form-label">$ 1</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="put1" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info" data-dismiss="modal" onclick="do_action('put')">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- put modal -->
+<!-- take modal -->
+<div class="modal fade" id="takeModal" tabindex="-1" role="dialog" aria-labelledby="takeModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="takeModalTitle">Take Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="takeForm" name="takeForm" role="form">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="take20" class="col-sm-2 col-form-label">$ 20</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="take20" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="take10" class="col-sm-2 col-form-label">$ 10</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="take10" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="take5" class="col-sm-2 col-form-label">$ 5</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="take5" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="take2" class="col-sm-2 col-form-label">$ 2</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="take2" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="take1" class="col-sm-2 col-form-label">$ 1</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="take1" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info" data-dismiss="modal" onclick="do_action('take')">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- take modal -->
+<!-- change modal -->
+<div class="modal fade" id="changeModal" tabindex="-1" role="dialog" aria-labelledby="changeModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeModalTitle">Change Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="changeForm" name="changeForm" role="form">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="cash" class="col-sm-4 col-form-label">Cash to change</label>
+                        <div class="col-sm-8">
+                            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control" id="cash" placeholder="e.g. 10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info" data-dismiss="modal" onclick="do_action('change')">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- change modal -->
+<!-- error modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">Error message</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- error modal -->
+<script type="text/javascript">
+    function init() {
+        $.ajax({
+            url: 'init.json',
+            contentType: 'application/json',
+            success: function(data,status,jqXHR){
+                if (data.code === 0) {
+                    $('#initModal').on('hidden.bs.modal', function () {
+                        location.href = "index.html";
+                    });
+                } else {
+                    $('#initModal').on('hidden.bs.modal', function () {
+                        $("#errorMessage").html(data.msg);
+                        $("#errorModal").modal('show');
+                    });
+                }
+            },
+            error: function(errorThrown ){
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function do_action(action) {
+        var param;
+        if (action === 'change') {
+            param = {
+                "type": action,
+                "cash": $('#cash').val()
+            };
+        } else {
+            param = {
+                "type": action,
+                "twenty": $('#'+action+'20').val(),
+                "ten": $('#'+action+'10').val(),
+                "five": $('#'+action+'5').val(),
+                "two": $('#'+action+'2').val(),
+                "one": $('#'+action+'1').val()
+            };
+        }
+
+        $.ajax({
+            type: 'post',
+            url: 'action.json',
+            data: JSON.stringify(param),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(data,status,jqXHR){
+                if (data.code === 0) {
+                    $('#'+action+'Modal').on('hidden.bs.modal', function () {
+                        location.href = "index.html";
+                    });
+                } else {
+                    $('#'+action+'Modal').on('hidden.bs.modal', function () {
+                        $("#errorMessage").html(data.msg);
+                        $("#errorModal").modal('show');
+                    });
+                }
+            },
+            error: function(errorThrown ){
+                console.log(errorThrown);
+            }
+        });
+    }
+</script>
+</body>
+</html>
