@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,16 @@ public class IndexController extends BaseController {
         boolean success;
         if (requestParam.get("type").equals("change")) {
             success = cashRegisterService.change(Integer.parseInt(requestParam.get("cash")));
+            Transaction transaction = cashRegisterService.findLastTransaction();
+            String usage = "$ 20 = " + transaction.getTwenty() +
+                    "<br>$ 10 = " + transaction.getTen() +
+                    "<br>$ 5 = " + transaction.getFive() +
+                    "<br>$ 2 = " + transaction.getTwo() +
+                    "<br>$ 1 = " + transaction.getOne();
+
+            if (success) {
+                return returnResult("Success", 0, usage, request, response);
+            }
         } else {
             Transaction transaction = new Transaction.Builder()
                     .type(requestParam.get("type"))
@@ -79,13 +90,12 @@ public class IndexController extends BaseController {
                     .build();
 
             success = cashRegisterService.save(transaction);
+            if (success) {
+                return returnResult("Success", 0, request, response);
+            }
         }
 
-        if (!success) {
-            return returnResult("Fail", 1, request, response);
-        }
-
-        return returnResult("Success", 0, request, response);
+        return returnResult("Fail", 1, request, response);
     }
 
 }

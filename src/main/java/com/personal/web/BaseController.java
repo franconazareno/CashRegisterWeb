@@ -59,6 +59,15 @@ public class BaseController {
         return null;
     }
 
+    String returnResult(String msg, int code, String data, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonStr = new JSONObject();
+        jsonStr.put("msg", msg);
+        jsonStr.put("code", code);
+        jsonStr.put("data", data);
+        writeJson(jsonStr.toString(), request, response);
+        return null;
+    }
+
     private void writeJson(String jsonStr, HttpServletRequest request, HttpServletResponse response) {
         try{
             response.setCharacterEncoding("UTF-8");
